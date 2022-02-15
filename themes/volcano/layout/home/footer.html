@@ -1,0 +1,36 @@
+<div class="ma_footer_cright">
+	<?php
+		$lang_copy = lang("© |DATE| |NAME|");
+		$lang_copy = str_replace('|NAME|', $music->config->name, $lang_copy);
+		echo $lang_copy = str_replace('|DATE|', date('Y'), $lang_copy);
+	?>
+	<div class="ma_footer_links">
+		<a href="{{LINK blogs}}" data-load="blogs">{{LANG Blogs}}</a> •
+		<a href="{{LINK terms/dmca}}" data-load="terms/dmca">{{LANG DMCA}}</a> • <a href="{{LINK terms/about}}" data-load="terms/about">{{LANG About Us}}</a> • <a href="{{LINK terms/terms}}" data-load="terms/terms">{{LANG Terms}}</a> • <a href="{{LINK contact}}" data-load="contact">{{LANG Contact}}</a> • <a href="{{LINK terms/privacy}}" data-load="terms/privacy">{{LANG Privacy Policy}}</a>
+
+		<?php $pages = GetCustomPages();
+							if (!empty($pages)) {
+							 ?>
+							 • <div class="lang_select dropup">
+				<button type="button" class="btn dropdown-toggle" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{LANG More}}</button>
+				<div class="dropdown-menu dropdown-menu-right mat-dropdown">
+					<ul class="list-unstyled mb-0">
+						<?php foreach($pages as $key => $page) { ?>
+							<li><a href="{{LINK site_pages/<?php echo($page['page_name']) ?>}}"><?php echo $page['page_title'];?></a></li>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
+		<?php } ?>
+		 • <div class="lang_select dropup">
+			<button type="button" class="btn dropdown-toggle" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo ucfirst($_SESSION['lang']); ?></button>
+			<div class="dropdown-menu dropdown-menu-right mat-dropdown">
+				<ul class="list-unstyled mb-0">
+					<?php foreach($music->langs as $lang) { ?>
+						<li><a href="?lang=<?php echo $lang; ?>"><?php echo ucfirst($lang); ?></a></li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

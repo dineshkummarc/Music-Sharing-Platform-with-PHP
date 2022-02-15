@@ -1,0 +1,169 @@
+<?php if ( $music->announcement !== '' ) {?>
+		<div class="announcement-renderer">
+			{{ANNOUNCEMENT}}
+		</div>
+		<br>
+<?php } ?>
+
+<div class="ma_page_content">
+	<div class="ma_pc_inner">
+		<center><?php echo GetAd('header');?></center>
+		<div class="page_padding ma_discover_page">
+			<?php if ($music->config->story_system == 'on' && IS_LOGGED) { ?>
+			<div class="user-status-home">
+				<ul class="status-list">
+					<li class="create_new">
+						<a href="{{LINK create_story}}" data-load="create_story">
+							<img src="{{ME avatar}}" alt="{{ME name}}">
+							<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="d-block"><path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>{{LANG Create Story}}</p>
+						</a>
+					</li>
+					<?php
+					$stories = GetAllFollowStories();
+					if (!empty($stories) && IS_LOGGED) {
+						foreach ($stories as $key => $value) { ?>
+						<li<?php if ($value->paid > 0) { ?> class="paid_story"<?php } ?>>
+							<a href="javascript:void(0)" onclick="StartStories(<?php echo($value->user_data->id) ?>,<?php echo($value->id) ?>)">
+								<img src="<?php echo($value->image) ?>" alt="<?php echo($value->user_data->name) ?>">
+								<?php if ($value->paid > 0) { ?>
+									<span class="paid_story_ico">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z" /></svg>
+									</span>
+								<?php } ?>
+								<p><?php echo($value->user_data->name) ?></p>
+							</a>
+						</li>
+					<?php } } ?>
+				</ul>
+			</div>
+            <?php } ?>
+			<div class="row">
+				<div class="col-md-7">
+					<!-- Top Slider -->
+					<div class="owl-carousel home_top_slider owl-theme">
+						{{TOP_SLIDER_CONTENT}}
+					</div>
+					<!-- End Top Slider -->
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="mus_disc_mini_blks">
+								<a href="{{LINK top_music}}" data-load="top_music">
+									<img src="{{CONFIG theme_url}}/img/top-music.jpg" alt="{{LANG Top Music}}">
+									<p>{{LANG Top Music}}</p>
+								</a>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="mus_disc_mini_blks">
+								<a href="{{LINK new_music}}" data-load="new_music">
+									<img src="{{CONFIG theme_url}}/img/new-music.jpg" alt="{{LANG New Music}}">
+									<p>{{LANG New Music}}</p>
+								</a>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="mus_disc_mini_blks">
+								<a href="{{LINK genres}}" data-load="genres">
+									<img src="{{CONFIG theme_url}}/img/genres.jpg" alt="{{LANG Genres}}">
+									<p>{{LANG Genres}}</p>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="short_list_cont top_dic_son_listz col-md-5">
+					<div class="short_list_card">
+						<h2 class="home_big_title">{{LANG Most Popular This Week}}</h2>
+						<ul class="s_list_songs home_tp_songs_list">
+							{{MOST_THIS_WEEK}}
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- Recently Played (Only Visible if User Plays any Music) -->
+				<div class="sq_music_tracks mb-60">
+					<h2 class="home_widget_title home_big_title">
+						{{LANG Recently Played}}
+						<div class="slide_btns">
+							<?php if (IS_LOGGED) { ?>
+							<a href="{{LINK recently_played}}" data-load="recently_played">{{LANG Show All}}</a>
+							<?php } ?>
+							<div class="recent_music_btn"></div>
+						</div>
+					</h2>
+					<div class="owl-carousel sq_track_slider owl-theme rp_slider">{{RECENT_PLAYS}}</div>
+				</div>
+			<!-- End Recently Played -->
+
+			<div class="row">
+				<div class="col-md-6">
+					<!-- New Releases -->
+					<div class="sq_music_tracks mb-60">
+						<h2 class="home_big_title">{{LANG New Releases}}</h2>
+						<div class="mus_disc_new_trk">
+							{{NEW_RELEASES}}
+						</div>
+					</div>
+					<!-- End New Releases -->
+				</div>
+
+				<div class="col-md-6">
+					<div class="short_list_cont short_list_cont_bigp top_dic_son_listz">
+						<!-- Recommended  -->
+						<div class="short_list_card">
+							<h2 class="home_big_title">{{LANG Recommended}}</h2>
+							<ul class="s_list_songs">
+								{{MOST_RECOMMENDED}}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Top This Week  -->
+			<div class="short_list_card">
+				<h2 class="home_big_title"><?php echo($music->config->store_system == 'on' ? '{{LANG Best Selling Songs & Products This Week}}' : '{{LANG Best Selling Songs & Albums This Week}}'); ?></h2>
+				<div class="row best_prods_seller_week">
+					{{BEST_THIS_WEEK}}
+				</div>
+			</div>
+			<!-- End Popular This Week/Recommende  -->
+		</div>
+	</div>
+</div>
+<script>
+$(function () {
+	$(".home_top_slider").owlCarousel({
+		items:1
+	});
+	$(".rp_slider").owlCarousel({
+		margin:20,
+		nav: true,
+		dots: false,
+		navContainer: '.recent_music_btn',
+		slideBy: 2,
+		items:7,
+		responsive:{
+			0:{
+				items:1
+			},
+			260:{
+				items:2
+			},
+			380:{
+				items:3
+			},
+			768:{
+				items:5
+			},
+			992:{
+				items:6
+			},
+			1300:{
+				items:7
+			}
+		}
+	});
+})
+</script>

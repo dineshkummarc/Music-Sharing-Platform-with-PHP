@@ -1,0 +1,49 @@
+<?php if ($music->config->stripe_payment == 'on') { ?>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<?php } ?>
+<div class="ma_page_content">
+    <div class="ma_pc_inner">
+        <div class="page_padding">
+            <!-- Settings -->
+            <div class="sett_page">
+                <?php echo loadPage("settings/sidebar"); ?>
+                <div class="st_content">
+                    <div class="st_form">
+                        <h3>{{LANG Wallet}}</h3>
+                        <form method="POST" id="monetization-settings">
+                            <div class="monetization-settings-alert"></div>
+
+							<div class="banner_header wallet">
+								<div class="circle-1"></div>
+								<div class="circle-2"></div>
+								<div class="position-relative">
+									<div class="row align-items-center">
+										<div class="col-md-9">
+											<h3 class="mb-3">{{LANG Available wallet}}</h3>
+											<h1><sup>{{CURRENCY}}</sup>{{USER wallet_format}}</h1>
+										</div>
+										<div class="col-md-3">
+											<a href="javascript:void(0);" onclick="ReplenishWallet();" id="btn-wallet" class="btn btn-light btn-primary btn-block btn-mat">{{LANG Top up wallet}}</a>
+										</div>
+									</div>
+								</div>
+							</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- End Settings -->
+        </div>
+    </div>
+</div>
+<form class="replenish-wallet-form hidden">
+    <div class="modal-title">
+        <h5>{{LANG MY BALANCE}} {{CURRENCY}}{{ME wallet}}</h5>
+    </div>
+    <div class="form-group mat_input">
+        <label>{{LANG Replenish My Balance}}</label>
+        <input type="number" class="form-control" placeholder="{{LANG Amount}}">
+    </div>
+</form>
+<div class="payment_method"></div>
+<?php echo loadPage("ads/wallet"); ?>

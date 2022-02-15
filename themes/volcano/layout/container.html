@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Title -->
+		<title>{{site_title}}</title>
+
+		<!-- Required Meta Tags Always Come First -->
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="{{theme_url}}/img/icon.png" />
+
+		<meta name="title" content="{{site_title}}">
+		<meta name="description" content="{{site_desc}}">
+		<meta name="keywords" content="{{site_keyword}}">
+
+
+		<?php echoOGTrackTags();?>
+
+		<!-- Google Fonts -->
+		<link href="{{theme_url}}/fonts/Roboto.css" rel="stylesheet">
+		<link href="{{theme_url}}/fonts/Muli.css" rel="stylesheet">
+
+		<script src="{{theme_url}}/js/jquery.min.js"></script>
+		<link rel="stylesheet" href="{{theme_url}}/css/jquery-ui.css">
+		<script src="{{CONFIG theme_url}}/js/jquery-ui.min.js"></script>
+		<!-- CSS -->
+		<link rel="stylesheet" href="{{theme_url}}/css/bootstrap.min.css">
+		<link rel="stylesheet" href="{{theme_url}}/css/owl.carousel.min.css">
+		<link rel="stylesheet" href="{{theme_url}}/css/style.css">
+		<script src="{{theme_url}}/js/wavesurfer.min.js"></script>
+
+		{{site_style}}
+
+		<script type="text/javascript" src="{{theme_url}}/js/tag-it.min.js"></script>
+		<link rel="stylesheet" href="{{theme_url}}/css/jquery.tagit.css">
+		<link rel="stylesheet" href="{{theme_url}}/css/bootstrap-colorpicker.min.css" />
+		<script src="{{theme_url}}/js/bootstrap-colorpicker.min.js"></script>
+
+		<script type="text/javascript" src="{{theme_url}}/js/fastclick.js"></script>
+		<!--  Scripts-->
+		<script>
+			function ajaxUrl() {
+				return '{{CONFIG ajax_url}}';
+			}
+			function siteUrl() {
+				return '{{LINK }}';
+			}
+		</script>
+		<!-- <script src="https://unpkg.com/wavesurfer.js"></script> -->
+		<?php if ($music->config->recaptcha == 'on') { ?>
+	    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	    <?php } ?>
+		<script src="{{theme_url}}/js/emojionearea.min.js"></script>
+		<link rel="stylesheet" href="{{theme_url}}/css/emojionearea.min.css">
+		 <?php if (!empty($music->config->google)) { ?>
+	     <script>
+	      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	      ga('create', '{{CONFIG google}}', 'auto');
+	      ga('send', 'pageview');
+	    </script>
+	    <?php } ?>
+	    <?php if ($music->config->checkout_payment == 'on') { ?>
+        <script type="text/javascript" src="https://www.2checkout.com/checkout/api/2co.min.js"></script>
+      <?php } ?>
+	    <?php if ($music->config->securionpay_payment == 'on') { ?>
+        <script src="https://securionpay.com/checkout.js"></script>
+      <?php } ?>
+		<script>
+            window.run_station = null;
+            $(document).ready(function() {
+                // $(".emoji_comment_btn").emojioneArea({
+                //     standalone: true,
+                //     autocomplete: false,
+                //     pickerPosition: "bottom",
+                //     emojiPlaceholder: "",
+                //     inline: true,
+                //     dir            : "ltr",
+                //     placement : 'absright'
+                // 	// container: "#container",
+                // 	// hideSource: false,
+                // 	// useSprite: false
+                // });
+                window.init_emojioneArea = function() {
+                    $(".comment_input").emojioneArea({
+                        useInternalCDN: true,
+                        events: {
+                            keyup: function (editor, event) {
+                                let emojioneArea = this; //this is instance of EmojioneArea
+                                <?php if ($music->config->maxCharacters != 10000) { ?>
+                                id = $( $(this)[0].source[0]).attr('data-audio-id');
+                                $($(".comment_input")).limit("{{CONFIG maxCharacters}}", '#charsLeft_'+id);
+                                c_id = $( $(this)[0].source[0]).attr('data-comment-id');
+                                if ($('#write_comment_'+c_id).length) {
+                                	$($('#write_comment_'+c_id)).limit("{{CONFIG maxCharacters}}", '#charsLeft_r_'+c_id);
+                                }
+                                <?php } ?>
+                                if (event.which === 13 && !event.shiftKey) {
+                                    // $scope.onPressKeyTextarea(event);
+									var audioid = $( $(this)[0].source[0]).attr('data-audio-id');
+									var commentid = $( $(this)[0].source[0]).attr('data-comment-id');
+									if(typeof commentid !== 'undefined'){
+										registerCommentreplay(emojioneArea.getText(), audioid, commentid, event, $(this));
+									}else{
+										registerComment(emojioneArea.getText(), audioid, event, $(this));
+									}
+                                    emojioneArea.setText('');
+                                    emojioneArea.hidePicker();
+                                    emojioneArea.editor.focus();
+                                    event.preventDefault();
+                                }
+                            }
+                        },
+                        search: false,
+                        recentEmojis: false,
+                        filtersPosition: "bottom",
+                        tones: false,
+                        autocomplete: true,
+                        filters: {animals_nature: false, food_drink: false, activity: false, travel_places: false, objects: false, symbols: false, flags: false}
+                    });
+                }
+				window.init_emojioneArea();
+
+				window.init_emojioneArea_replay = function(id) {
+					$('#write_comment_'+id).emojioneArea({
+						useInternalCDN: true,
+						events: {
+							keyup: function (editor, event) {
+								let _emojioneArea = this; //this is instance of EmojioneArea
+								if (event.which === 13 && !event.shiftKey) {
+									var _audioid = $( $(this)[0].source[0]).attr('data-audio-id');
+									var _commentid = $( $(this)[0].source[0]).attr('data-comment-id');
+									registerCommentreplay(_emojioneArea.getText(), _audioid, _commentid, event, $(this));
+									_emojioneArea.setText('');
+									_emojioneArea.hidePicker();
+									_emojioneArea.editor.focus();
+									event.preventDefault();
+								}
+							}
+						},
+						search: false,
+						recentEmojis: false,
+						filtersPosition: "bottom",
+						tones: false,
+						autocomplete: false,
+						filters: {animals_nature: false, food_drink: false, activity: false, travel_places: false, objects: false, symbols: false, flags: false}
+					});
+				}
+
+				window.init_blogemojioneArea = function() {
+                    $(".blog_comment_input").emojioneArea({
+                        useInternalCDN: true,
+                        events: {
+                            keyup: function (editor, event) {
+                                let emojioneArea = this; //this is instance of EmojioneArea
+                                if (event.which === 13 && !event.shiftKey) {
+                                    // $scope.onPressKeyTextarea(event);
+									var audioid = $( $(this)[0].source[0]).attr('data-article-id');
+                                    registerBlogComment(emojioneArea.getText(), audioid, event, $(this));
+                                    emojioneArea.setText('');
+                                    emojioneArea.hidePicker();
+                                    emojioneArea.editor.focus();
+                                    event.preventDefault();
+                                }
+                            }
+                        },
+                        search: false,
+                        recentEmojis: false,
+                        filtersPosition: "bottom",
+                        tones: false,
+                        autocomplete: true,
+                        filters: {animals_nature: false, food_drink: false, activity: false, travel_places: false, objects: false, symbols: false, flags: false}
+                    });
+                }
+                window.init_blogemojioneArea();
+            });
+		</script>
+
+		<script>
+		$(document).ready(function() {
+		  $.ajaxSetup({
+		    data: {
+		        hash_id: getHashID()
+		    },
+		    cache: false
+		  });
+		});
+		$(window).on("popstate", function () {
+			if (history.state.ajax_url) {
+				goToAjaxLink(history.state.ajax_url);
+			}
+		});
+        window.search_url = '{{LINK search/songs/}}';
+        window.chatfetch = false;
+			$(document).on('click', '[data-load]', function(event) {
+				$('.xzoom-source').remove();
+				$('#buy_ticket_modal').modal('hide');
+				if ($(this).attr('data-load') == '') {window.open($(this).attr('href'), '_blank');
+					if (parseInt($('.ss_track_play_pause').attr('data_is_ad')) > 0) {
+				 		is_sent = 1;
+				 		song_id = $('#current-track').attr('value');
+				 		onTimesUp(song_id);
+				 		return false;
+				 	}
+					return false;
+				}
+				  //$('.sections li').removeClass('active');
+			      $('#bar_loading').show().animate({width:20 + 80 * Math.random() + "%"}, 200);
+			      event.preventDefault();
+			      var url = $(this).attr('data-load');
+			      $.ajax({
+			        url: siteUrl() + '/ajax-load.php?path=' + url,
+			        type: 'GET',
+			        dataType: 'html'
+			      })
+			      .done(function(data_html, textStatus, request) {
+			      	if (request.status == 201) {
+			      		$('#login_box').modal('show');
+			      	} else {
+                        if(window.run_station !== null){
+                            window.run_station.pause();
+                        }
+
+			      		data = JSON.parse($(data_html).filter('#json-data').val());
+				        window.history.pushState({state:'new', ajax_url: url},'', data.url);
+
+                        if(data.page_name == 'messages'){
+                            window.chatfetch = true;
+						}else{
+                            window.chatfetch = false;
+						}
+
+				        if(data.page_name !== 'search'){
+				            $('#search_keyword').val('');
+						}
+
+				        $('#container_content').html(data_html);
+				        $('meta[name=title]').attr('content', data.site_title);
+				        $('#page').attr('data-page', data.page_name);
+				        $('meta[name=description]').attr('content', data.description);
+				        $('meta[name=keywords]').attr('content', data.keyword);
+				        $('title').html(data.site_title);
+				        if (data.page_name) {
+				        	setTimeout(function () {
+				        		updateWaves = false;
+				        		if ($('#current-track').val()) {
+				        			if (Amplitude.getActiveSongMetadata().id == $('#current-track').val()) {
+					        			updateWaves = true;
+					        		} else {
+					        			$('body').removeClass('player_running');
+					        		}
+				        		} else {
+				        			updateWaves = true;
+				        		}
+				        		if (updateWaves == true) {
+				        			var getCurrentPlaying = Number($('.amplitude-song-played-progress').attr('value')) * 100;
+					        		$('#light-wave, #light-waves').width(getCurrentPlaying + '%');
+					        		updateWaveForm();
+				        		}
+				        	}, 100);
+                            if( data.page_name == 'blogs' ){
+                                window.search_url = '{{LINK blogs/tag/}}';
+                            }
+				        }
+				        if (Amplitude.getActiveSongMetadata().id && $('#page').attr('data-page') == 'track') {
+				        	if (Amplitude.getActiveSongMetadata().id == $('#current-track').val()) {
+				        		$('body').addClass('player_running');
+				        	}
+				        }
+				        if (Amplitude.getActiveSongMetadata().u_id && $('#page').attr('data-page') != 'track') {
+				        	$('.playlist-list-song[data-id=' + Amplitude.getActiveSongMetadata().u_id + ']').addClass('playing');
+				        	$('.list-recommended[data-id=' + Amplitude.getActiveSongMetadata().u_id + ']').addClass('playlist-list-song playing');
+				        	if ($('.feed_post[data-id="' + Amplitude.getActiveSongMetadata().u_id + '"]').length > 0) {
+				        		$.get('{{CONFIG ajax_url}}/get-song-info', {id: Amplitude.getActiveSongMetadata().id}, function(data) {
+				        			if (data.status == 200) {
+				        				$('body').attr('song-duration', data.duration);
+				        				if (data.songWaves.length > 0) {
+											$('.feed_post[data-id="' + data.songID + '"]:first').find('.waveform-small').html(data.songWaves);
+											$('#light-wave img').width($('#dark-wave').width() + 'px');
+											$('#light-waves img').width($('#dark-wavez').width() + 'px');
+											$('.feed_post[data-id="' + data.songID + '"]:first').find('.post-actions').removeClass('hidden');
+											$('.feed_post[data-id="' + data.songID + '"]:first').find('.ssong_comments').removeClass('hidden');
+											$('.feed_post[data-id="' + data.songID + '"]:first').find('.mus_feeds_bodycoms').removeClass('hidden');
+											$('.feed_post[data-id="' + data.songID + '"]:first').find('.art-info').removeClass('hidden');
+				    						$('.feed_post[data-id="' + data.songID + '"]:first').find('.comment_list').html(data.comments);
+				    						$('.feed_post[data-id="' + data.songID + '"]:first').find('.comment-waves').html(data.waves);
+				    						var getCurrentPlaying = Number($('.amplitude-song-played-progress').attr('value')) * 100;
+					        		        $('#light-wave, #light-waves').width(getCurrentPlaying + '%');
+				    						updateWaveForm();
+										}
+				        			}
+				        		});
+				        	}
+				        }
+                        $('#music-user-ads-table').find('[type="checkbox"]').each(function(index, el) {
+                            $(el).bootstrapToggle();
+                        });
+                        if( data.page_name === 'station'){
+                            setTimeout(function () {
+                                $('body').addClass('player_running');
+                            }, 100);
+                        }
+			      	}
+
+			      })
+			      .fail(function() {
+			         window.location.href = siteUrl()+'/404';
+			      })
+			      .always(function() {
+			      	if (typeof data !== 'undefined') {
+			      		if (data.page_name == 'user' && data.scroll == true) {
+				        	$('html,body').animate({
+						        scrollTop: $('#myTab').offset().top - 350
+						    });
+				        } else {
+				        	$('html,body').animate({
+						        scrollTop: $('body').offset().top
+						    });
+				        }
+                        window.init_emojioneArea();
+			      	}
+			        $('#bar_loading').animate({width:"100%"}, 200).fadeOut(300, function() {
+			           $(this).width("0");
+			        });
+			      });
+			  });
+			window.artist_sell = '<?php echo $music->config->artist_sell;?>';
+			var video_player;
+		</script>
+
+		<script src="{{theme_url}}/js/header.js<?php echo ($music->update_cache !== '') ?$music->update_cache:'?'.rand(1111,4444); ?>"></script>
+
+		<?php if ($_COOKIE['mode'] !== 'night') { ?>
+		<link rel="stylesheet" href="{{CONFIG theme_url}}/css/day.style.css<?php echo $music->update_cache; ?>" id="night-mode-css">
+		<?php } ?>
+
+		<link rel="stylesheet" href="{{CONFIG theme_url}}/css/custom.style.css<?php echo ($music->update_cache !== '') ?$music->update_cache:'?'.rand(1111,4444); ?>" id="custom.style.css">
+		<?php if ($music->language_type == 'rtl'){?>
+		<link rel="stylesheet" href="{{CONFIG theme_url}}/css/rtl.style.css">
+		<?php }?>
+
+		<link rel="stylesheet" href="{{CONFIG theme_url}}/js/lib/sweetalert2/dist/sweetalert2.min.css">
+		<link rel="stylesheet" type="text/css" href="{{CONFIG theme_url}}/css/dataTables.bootstrap4.min.css">
+		<link rel="stylesheet" href="{{CONFIG theme_url}}/css/bootstrap-select.min.css">
+
+		<?php if( $music->config->stripe_payment == 'on' ){?>
+		<script src="https://js.stripe.com/v3/"></script>
+		<?php } ?>
+		<?php if ($music->config->event_system == 1 || $music->config->youtube_video == 'on') { ?>
+		<script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+		<link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+		<?php } ?>
+		<?php if ($music->config->event_system == 1) { ?>
+		<script src="{{CONFIG theme_url}}/js/jquery-ui-timepicker-addon.min.js"></script>
+		<?php } ?>
+		<?php if ($music->config->store_system == 'on') { ?>
+		<script type="text/javascript" src="{{CONFIG theme_url}}/js/xzoom.min.js"></script>
+		<script src="{{CONFIG theme_url}}/js/html2pdf.bundle.js"></script>
+		<script src="{{theme_url}}/js/qrcode.js"></script>
+		<link rel="stylesheet" href="{{theme_url}}/css/lightbox.min.css">
+		<script src="{{theme_url}}/js/lightbox.min.js"></script>
+		<?php } ?>
+	</head>
+
+	<body class="{{classes}}" data-lang="<?php if ($music->language_type == 'rtl'){?>rtl<?php } else {?>ltr<?php } ?>">
+	<?php $loadPage = loadPage('thirdparty/theme-changer'); echo (!empty($loadPage)) ? $loadPage : '';?>
+		<div class="music_app">
+			<div class="ma_container" id="page" data-page="<?php echo $music->site_pagename?>">
+				<!-- Start Sidebar  -->
+				{{site_sidebar}}
+				<!-- End Sidebar  -->
+
+				<!-- Header  -->
+				<div id="main-header">
+					{{site_header}}
+				</div>
+				<div id="bar_loading"></div>
+				<!-- End Header  -->
+
+				<!-- Content  -->
+				<div id="container_content">
+					{{site_content}}
+				</div>
+				<!-- End Content  -->
+
+				<!-- Footer -->
+				<div class="ma_footer">
+					<?php echo GetAd('footer');?>
+
+					<?php echo loadPage('home/footer')?>
+				</div>
+				<!-- End Footer -->
+			</div>
+			<!-- Player  -->
+			{{site_player}}
+			<!-- End Player  -->
+		</div>
+
+		<!-- Login Modal  -->
+		{{site_loginForm}}
+		<!-- End Login Modal  -->
+
+		<!-- Signup Modal  -->
+		{{site_signupForm}}
+		<!-- End Signup Modal  -->
+
+		<!-- Modals -->
+		<?php echo loadPage('modals/delete-song')?>
+		<?php echo loadPage('modals/delete-comment')?>
+		<?php echo loadPage('modals/delete-post')?>
+		<?php echo loadPage('modals/reposted')?>
+		<?php echo loadPage('modals/purchase-song')?>
+		<?php echo loadPage('modals/age-restrcited')?>
+		<?php echo loadPage('modals/copyright')?>
+		<?php echo loadPage('modals/comment-report')?>
+		<?php echo loadPage('modals/blog-comment-report')?>
+		<?php echo loadPage('modals/track-report')?>
+		<?php echo loadPage('modals/track-review')?>
+		<?php echo loadPage('modals/payment-modal')?>
+		<?php if ($music->config->paypal_payment == 'on') {?>
+		<?php echo loadPage('modals/paymentpro-modal')?>
+    <?php } ?>
+		<?php echo loadPage('modals/bank-payment')?>
+		<?php echo loadPage('modals/logout-modal')?>
+		<?php echo loadPage('modals/two-factor')?>
+		<?php echo loadPage('modals/buy_album')?>
+		<?php echo loadPage('modals/refund_order')?>
+		<?php echo loadPage('modals/add_address_modal')?>
+		<?php echo loadPage('modals/delete-address')?>
+
+		<?php echo loadPage('modals/buy_product_modal')?>
+		<?php echo loadPage('modals/delete-product')?>
+		<?php echo loadPage('modals/story_pay')?>
+
+		<?php echo loadPage('modals/wallet_to_pay')?>
+		<?php echo loadPage('modals/buy_ticket_modal')?>
+		<?php echo loadPage('modals/unjoin-event')?>
+
+		<?php echo loadPage('modals/delete-event')?>
+		<?php echo loadPage('modals/albums_success')?>
+		<?php echo loadPage('modals/ShowAlert')?>
+
+		<div class="queue_overlay" onclick="javascript:$('body').removeClass('data-queue-open');"></div>
+		<div class="sidenav_overlay" onclick="javascript:$('body').removeClass('side_open');"></div>
+
+
+		<?php echo loadPage('extrajs/content');?>
+		<script src="{{theme_url}}/js/fingerprint2.min.js"></script>
+		<script src="{{theme_url}}/js/jquery.form.min.js"></script>
+		<script src="{{theme_url}}/js/popper.min.js"></script>
+		<script src="{{theme_url}}/js/bootstrap.min.js"></script>
+		<script src="{{theme_url}}/js/owl.carousel.min.js"></script>
+		<script src="{{theme_url}}/js/simplebar.min.js"></script>
+		<script src="{{theme_url}}/js/amplitude.min.js"></script>
+		<script src="{{theme_url}}/js/script.js"></script>
+		<script src="{{theme_url}}/js/Chart.min.js"></script>
+		<script src="{{CONFIG theme_url}}/js/highcharts/highcharts.js"></script>
+		<script src="{{CONFIG theme_url}}/js/footer.js"></script>
+		<script src="{{CONFIG theme_url}}/js/bootstrap-select.min.js"></script>
+		<script type="text/javascript" src="{{CONFIG theme_url}}/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="{{CONFIG theme_url}}/js/dataTables.bootstrap4.min.js"></script>
+		<script src="{{CONFIG theme_url}}/js/lib/sweetalert2/dist/sweetalert2.js"></script>
+		<script src="{{CONFIG theme_url}}/js/bootstrap-toggle.min.js"></script>
+		<input type="hidden" class="main_session" value="<?php echo createMainSession();?>">
+    <?php echo LoadPage('timeago/content');?>
+
+		<script>
+			<?php if( isset($_GET['invite']) && !empty($_GET['invite']) ){?>
+			$('#signup_box').modal('show');
+			<?php }?>
+            $('#rmjs-1').readmore({
+                speed: 75,
+                collapsedHeight: 190,
+                moreLink: '<a href="#" class="hash"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg> {{LANG Read more}}</a>',
+				lessLink: '<a href="#" class="hash"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" /></svg> {{LANG Read less}}</a>',
+                afterToggle: function(trigger, element, expanded) {
+                    //if(! expanded) {
+                        // The "Close" link was clicked
+                        $('html, body').animate({scrollTop: element.offset().top}, {duration: 100});
+                    //}
+                }
+            });
+            var running = false;
+            $( document ).on( 'change', '#chat_message_upload_media_file', function(e){
+                if( running === true ){
+                    running = false;
+                    return false;
+                }
+                running = true;
+                var countFiles = $(this)[0].files.length;
+                var imgPath = $(this)[0].value;
+                var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+
+                if(countFiles > 1) {
+                    M.toast({html: 'Please select Four Images only.'});
+                } else if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+
+                    let from = $( '#user-id' ).val();
+                    let formData = new FormData();
+                    formData.append( "media", $(this)[0].files[0],$(this)[0].files[0].value );
+                    formData.append( 'to' , $('#user-id').val() );
+                    formData.append( 'message_id' , window.message_id );
+
+                    var img = $('<img style="width: 300px;border-radius: 20px;">');
+                    //if (typeof(FileReader) != "undefined") {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL($(this)[0].files[0]);
+                    //}
+
+                    $('.lds-facebook').removeClass('hide');
+                    $('#btn_chat_f_send').addClass('hide');
+
+                    $( '.chat_message_upload_media_imgprogress' ).removeClass( 'hide' );
+                    $( '.chat_message_upload_media_imgstatus' ).removeClass( 'hide' );
+                    $.ajax({
+                        xhr: function() {
+                            let xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function(evt){
+                                if (evt.lengthComputable) {
+                                    let percentComplete = evt.loaded / evt.total;
+                                    percentComplete = parseInt(percentComplete * 100);
+                                    //console.log( 'prog: ' + percentComplete + '%');
+                                    $( '#chat_message_upload_media_imgstatus' ).html( percentComplete + '%');
+                                    $( '.chat_message_upload_media_imgdeterminate' ).css({'width': percentComplete + '%'});
+                                    if (percentComplete === 100) {
+                                        $( '.chat_message_upload_media_imgprogress' ).addClass( 'hide' );
+                                        $( '.chat_message_upload_media_imgstatus' ).addClass( 'hide' );
+                                        $( '#chat_message_upload_media_imgstatus' ).html( '' );
+                                    }
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        beforeSend: function() {
+                            $('.messages').append('<div class="data_message" data-id="' + window.message_id + '"><div class="message to-user pull-right" data-id=""><div class="user-message"></div><div class="clear"></div></div><div class="clear"></div></div>');
+                            img.appendTo($('.data_message[data-id="' + window.message_id + '"]').find('.user-message'));
+                            $('.user-messages').scrollTop($('.user-messages')[0].scrollHeight);
+                            window.message_id = makeid();
+                        },
+                        url: '{{LINK endpoints/messages/upload_media}}?hash_id=' + $('.main_session').val(),
+                        type: "POST",
+                        async: true,
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        timeout: 60000,
+                        dataType: false,
+                        success: function(data) {
+                            $('.data_message[data-id="' + data.message_id + '"]').replaceWith(data.message);
+                            running = false;
+                        }
+                    });
+
+                }else{
+                    M.toast({html: 'Please select only Images.'});
+                }
+            });
+
+            // update user last seen
+            function getRandomBetween(min, max) {
+                return min + Math.random() * (max - min);
+            }
+            function UpdateLastSeen() {
+                $.get('{{LINK endpoints/user/update_lastseen}}', { }, function () {
+                    setTimeout(UpdateLastSeen, getRandomBetween(60000, 120000));
+                });
+            }
+            setTimeout(UpdateLastSeen, getRandomBetween(60000, 120000));
+            function GetArtist(key,form = '') {
+            	$.post('{{LINK endpoints/tag_artist/tag}}', {key: key}, function(data, textStatus, xhr) {
+            		if (data.html) {
+            			if (form != '') {
+            				$('#group_chat_mbr_list_'+form).html(data.html);
+            			}
+            			else{
+            				$('.group_chat_mbr_list').html(data.html);
+            			}
+            		}
+            	});
+            }
+            function ApproveRequest(id) {
+            	$.post('{{LINK endpoints/tag_artist/approve}}', {id: id}, function(data, textStatus, xhr) {});
+            }
+            function DeclineRequest(id) {
+            	$.post('{{LINK endpoints/tag_artist/decline}}', {id: id}, function(data, textStatus, xhr) {});
+            }
+            function count_char(self,id) {
+			    $(self).limit("{{CONFIG maxCharacters}}", id);
+			}
+			<?php if ($music->config->iyzipay_payment == 'on') { ?>
+				function iyzipay_pay(self,type) {
+					self.attr('disabled','true');
+					$('#buy_album_modal').modal('hide');
+					id    = $('#buy_album_modal').attr('data-id');
+					amount = $('#buy_album_modal').attr('data_price');
+					if (type == 'buy_song') {
+						id    = $('#payment_modal').attr('data-id');
+					}
+					if (type== 'wallet') {
+						amount = $('#wallet_payment_modal').attr('data_price');
+					}
+					$.post('{{LINK endpoints/iyzipay/initialize}}', {
+			            type: type,
+			            id: id,
+			            amount: amount
+			        }, function(data) {
+						if (data.status == 200) {
+							$('#iyzipay_content').html('');
+							$('#iyzipay_content').html(data.html);
+						} else {
+							self.attr('disabled', false).html("Iyzipay App not set yet.");
+						}
+						self.removeAttr('disabled');
+					});
+				}
+			<?php } ?>
+			<?php if ($music->config->paysera_payment == 'on') { ?>
+				function paysera_pay(self,type) {
+					$('#btn-paysera-payment').html("{{LANG please_wait}}");
+					$('#btn-paysera-payment').attr('disabled','true');
+					id    = $('#buy_album_modal').attr('data-id');
+					amount = $('#buy_album_modal').attr('data_price');
+					if (type == 'buy_song') {
+						id    = $('#payment_modal').attr('data-id');
+					}
+					if (type == 'wallet') {
+						amount = $('#wallet_payment_modal').attr('data_price');
+					}
+					$.post('{{LINK endpoints/paysera/initialize}}', {type:type,amount:amount,id:id}, function(data) {
+						if (data.status == 200) {
+							window.location.href = data.url;
+						} else {
+							// $('#paystack_fund_alert').html("<div class='alert alert-danger'>"+data.error+"</div>");
+							// setTimeout(function () {
+							// 	$('#paystack_fund_alert').html("");
+							// },3000);
+						}
+						$('#btn-paysera-payment').html("{{LANG Pay}}");
+						$('#btn-paysera-payment').removeAttr('disabled');
+					});
+				}
+			<?php } ?>
+		</script>
+		<script src="{{CONFIG theme_url}}/js/footer.js<?php echo ($music->update_cache !== '') ?$music->update_cache:'?'.rand(1111,4444); ?>"></script>
+		<?php if ($music->config->securionpay_payment == 'on') { ?>
+		<?php echo loadPage('modals/securionpay_type')?>
+		<?php } ?>
+		<?php if ($music->config->authorize_payment == 'on') { ?>
+	  <?php echo loadPage('modals/authorize_modal')?>
+	  <?php } ?>
+		<?php if ($music->config->payu_payment == 'on') { ?>
+		<?php echo loadPage('modals/payu_modal')?>
+    <?php } ?>
+		<?php if ($music->config->iyzipay_payment == 'on') { ?>
+		<div id="iyzipay_content"></div>
+		<?php } ?>
+		<?php if ($music->config->checkout_payment == 'on') { ?>
+		<?php echo loadPage('modals/2checkout_wallet_modal')?>
+		<?php } ?>
+		<?php if ($music->config->cashfree_payment == 'on') { ?>
+		<?php echo loadPage('modals/cashfree_wallet_modal')?>
+		<?php } ?>
+		<?php if ($music->config->paystack_payment == 'on') { ?>
+		<?php echo loadPage('modals/paystack_fund_modal')?>
+		<?php } ?>
+		<?php if ($music->config->razorpay_payment == 'on') { ?>
+		<?php echo loadPage('modals/razorpay_modal')?>
+		<?php } ?>
+	</body>
+</html>

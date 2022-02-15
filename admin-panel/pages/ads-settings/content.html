@@ -1,0 +1,193 @@
+<?php
+
+$paypal_live    = ($music->config->paypal_mode == 'live') ? 'checked' :'';
+$paypal_sb      = ($music->config->paypal_mode == 'sandbox') ? 'checked' :'';
+
+$bank_payment      = ($music->config->bank_payment == 'on') ? 'checked' :'';
+
+?>
+
+<div class="container-fluid">
+    <div>
+        <h3>Advertisements System Settings</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">Payments & Ads</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Advertisements System Settings</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Vertical Layout -->
+    <div class="row">
+
+        <div class="col-lg-6 col-md-6 pull-left">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Advertisements Settings</h6>
+                    <div class="payment-settings-alert"></div>
+                    <form class="payment-settings" method="POST">
+                        <div class="float-left">
+                            <label for="user_ads" class="main-label">Advertisements System</label>
+                            <br><small class="admin-info">Allow users to create ads.</small>
+                        </div>
+                        <div class="form-group float-right switcher">
+                            <input type="hidden" name="user_ads" value="off" />
+                            <input type="checkbox" name="user_ads" id="chck-user_ads" value="on" <?php echo ($music->config->user_ads == 'on') ? 'checked': '';?>>
+                            <label for="chck-user_ads" class="check-trail"><span class="check-handler"></span></label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="float-left">
+                            <label for="audio_ads" class="main-label">Audio Advertisement</label>
+                            <br><small class="admin-info">Allow users to create audio ads.</small>
+                        </div>
+                        <div class="form-group float-right switcher">
+                            <input type="hidden" name="audio_ads" value="off" />
+                            <input type="checkbox" name="audio_ads" id="chck-audio_ads" value="on" <?php echo ($music->config->audio_ads == 'on') ? 'checked': '';?>>
+                            <label for="chck-audio_ads" class="check-trail"><span class="check-handler"></span></label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <label for="who_audio_ads">Who Can Create Audio Advertisement</label>
+                        <br><small class="admin-info">Choose who can create audio ads.</small>
+                        <div class="form-group">
+                            <select class="form-control show-tick" id="who_audio_ads" name="who_audio_ads">
+                              <option value="admin" <?php if($music->config->who_audio_ads == 'admin'){ echo "selected";} ?>>Admin</option>
+                              <option value="users" <?php if($music->config->who_audio_ads == 'users'){ echo "selected";} ?>>Users</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <div class="float-left">
+                            <label for="usr_v_mon" class="main-label">Track Monetization</label>
+                            <br><small class="admin-info">Track Monetization</small>
+                        </div>
+                        <div class="form-group float-right switcher">
+                            <input type="hidden" name="usr_v_mon" value="off" />
+                            <input type="checkbox" name="usr_v_mon" id="chck-usr_v_mon" value="on" <?php echo ($music->config->usr_v_mon == 'on') ? 'checked': '';?>>
+                            <label for="chck-usr_v_mon" class="check-trail"><span class="check-handler"></span></label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">CPI, Cost Per Impression</label>
+                                <input type="text" name="ad_v_price" class="form-control" value="<?php echo ($music->config->ad_v_price);?>">
+                                <small class="admin-info">Set a price for ads impressions.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">CPC, Cost Per Click</label>
+                                <input type="text" name="ad_c_price" class="form-control" value="<?php echo ($music->config->ad_c_price);?>">
+                                <small class="admin-info">Set a price for ads clicks.</small>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <input type="hidden" name="hash_id" value="<?php echo createMainSession();?>">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- #END# Vertical Layout -->
+<script>
+$(function() {
+    $('.switcher input[type=checkbox]').click(function () {
+        var configName = $(this).attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        if ($(this).is(":checked") === true) {
+            objData[configName] = $(this).val();
+        }
+        else{
+            if ($('input[name='+configName+']')[0]) {
+                objData[configName] = $($('input[name='+configName+']')[0]).val();
+            }
+        }
+        objData['hash_id'] = hash_id;
+        $.post('{{CONFIG ajax_url}}/ap/save-settings', objData);
+    });
+
+    var setTimeOutColor = setTimeout(function (){});
+    $('select').on('change', function() {
+         clearTimeout(setTimeOutColor);
+        var thisElement = $(this);
+        var configName = thisElement.attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        objData[configName] = thisElement.val();
+        objData['hash_id'] = hash_id;
+        thisElement.addClass('warning');
+        $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+            if (data.status == 200) {
+                thisElement.removeClass('warning');
+                thisElement.addClass('success');
+            } else {
+                thisElement.addClass('error');
+            }
+            var setTimeOutColor = setTimeout(function () {
+                thisElement.removeClass('success');
+                thisElement.removeClass('warning');
+                thisElement.removeClass('error');
+            }, 2000);
+        });
+    });
+    $('input[type=color]').on('change', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+    $('input[type=text], input[type=number], input[type=color] , textarea').on('keyup', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+});
+</script>

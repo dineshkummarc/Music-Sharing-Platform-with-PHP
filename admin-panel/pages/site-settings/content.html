@@ -1,0 +1,348 @@
+<div class="container-fluid">
+    <div>
+        <h3>Website Information</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">Settings</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Website Information</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Vertical Layout -->
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Website Information</h6>
+                    <div class="site-settings-alert"></div>
+                    <form class="site-settings" method="POST">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Site Title</label>
+                                <input type="text" name="title" class="form-control" value="<?php echo ($music->config->title);?>">
+                                <small class="admin-info">Your website general title, it will appear on Google and on your browser tab.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Site Name</label>
+                                <input type="text" name="name" class="form-control" value="<?php echo ($music->config->name);?>">
+                                <small class="admin-info">Your website name, it will appear on website's footer and E-mails.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Site E-mail</label>
+                                <input type="text" name="email" class="form-control" value="<?php echo ($music->config->email);?>">
+                                <small class="admin-info">Your website E-mail, it will appear on website's footer and E-mails.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Site Keywords</label>
+                                <input type="text" name="keyword" class="form-control" value="<?php echo ($music->config->keyword);?>">
+                                <small class="admin-info">Your website's keyword, used mostly for SEO and search engines.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Site Description</label>
+                                <textarea name="description" id="description" class="form-control" cols="30" rows="5"><?php echo ($music->config->description);?></textarea>
+                                <small class="admin-info">Your website's description, used mostly for SEO and search engines, Max of 100 characters is recommended</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Facebook URL</label>
+                                <input type="text" name="facebook_url" class="form-control" value="<?php echo ($music->config->facebook_url);?>">
+                                <small class="admin-info">Set your FB page URL to show in footer.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Twitter URL</label>
+                                <input type="text" name="twitter_url" class="form-control" value="<?php echo ($music->config->twitter_url);?>">
+                                <small class="admin-info">Set your Twitter page URL to show in footer.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Google URL</label>
+                                <input type="text" name="google_url" class="form-control" value="<?php echo ($music->config->google_url);?>">
+                                <small class="admin-info">Set your Google page URL to show in footer.</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Features API Keys & Information</h6>
+                    <div class="radiostation-settings-alert"></div>
+                    <form class="radiostation-settings" method="POST">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Google Analytics ID</label>
+                                <input type="text" name="google" class="form-control" value="<?php echo ($music->config->google);?>">
+                                <small class="admin-info"></small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Radio Stations Settings</h6>
+                    <div class="radiostation-settings-alert"></div>
+                    <form class="radiostation-settings" method="POST">
+                        <div class="float-left">
+                            <label for="radio_station_import" class="main-label">Radio Stations</label>
+                            <br><small class="admin-info">Radio stations system.</small>
+                        </div>
+                        <div class="form-group float-right switcher">
+                            <input type="hidden" name="radio_station_import" value="off" />
+                            <input type="checkbox" name="radio_station_import" id="chck-radio_station_import" value="on" <?php echo ($music->config->radio_station_import == 'on') ? 'checked': '';?>>
+                            <label for="chck-radio_station_import" class="check-trail"><span class="check-handler"></span></label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Rapid API - Radio Stations</label>
+                                <input type="text" name="rapidapi_key" class="form-control" value="<?php echo ($music->config->rapidapi_key);?>">
+                                <small class="admin-info">You can register api to get more than 30,000 radio stations.<br> To get started, <a href="https://rapidapi.com/auth?referral=/developer" target="_blank">Register Here</a>.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <!-- #END# Vertical Layout -->
+<script>
+$(function() {
+    $('.switcher input[type=checkbox]').click(function () {
+        var configName = $(this).attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        if ($(this).is(":checked") === true) {
+            objData[configName] = $(this).val();
+        }
+        else{
+            if ($('input[name='+configName+']')[0]) {
+                objData[configName] = $($('input[name='+configName+']')[0]).val();
+            }
+        }
+        objData['hash_id'] = hash_id;
+        $.post('{{CONFIG ajax_url}}/ap/save-settings', objData);
+    });
+
+    var setTimeOutColor = setTimeout(function (){});
+    $('select').on('change', function() {
+         clearTimeout(setTimeOutColor);
+        var thisElement = $(this);
+        var configName = thisElement.attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        objData[configName] = thisElement.val();
+        objData['hash_id'] = hash_id;
+        thisElement.addClass('warning');
+        $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+            if (data.status == 200) {
+                thisElement.removeClass('warning');
+                thisElement.addClass('success');
+            } else {
+                thisElement.addClass('error');
+            }
+            var setTimeOutColor = setTimeout(function () {
+                thisElement.removeClass('success');
+                thisElement.removeClass('warning');
+                thisElement.removeClass('error');
+            }, 2000);
+        });
+    });
+    $('input[type=color]').on('change', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+    $('input[type=text], input[type=number], input[type=color] , textarea').on('keyup', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+});
+
+$(function() {
+    var form_site_settings = $('form.site-settings');
+    var form_other_settings = $('form.other-settings');
+    var form_soundcloud_settings = $('form.soundcloud-settings');
+    var form_radiostation_settings = $('form.radiostation-settings');
+
+    var form_recaptcha_settings = $('form.recaptcha-settings');
+
+    form_recaptcha_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_recaptcha_settings.find('.waves-effect').text("Please wait...");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+                form_recaptcha_settings.find('.waves-effect').text('Save');
+                $('.recaptcha-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                setTimeout(function () {
+                    $('.recaptcha-settings-alert').empty();
+                }, 2000);
+            }
+        }
+    });
+
+    var form_payment_settings = $('form.payment-settings');
+
+    form_payment_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_payment_settings.find('.waves-effect').text("Please wait...");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+                form_payment_settings.find('.waves-effect').text('Save');
+                $('.payment-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                setTimeout(function () {
+                    $('.payment-settings-alert').empty();
+                }, 2000);
+            }
+        }
+    });
+
+    form_site_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_site_settings.find('button').text("Please wait");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+            	form_site_settings.find('button').text('Save');
+            	$('.site-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+            	setTimeout(function () {
+            		$('.site-settings-alert').empty();
+            	}, 2000);
+            }
+        }
+    });
+
+    form_other_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_other_settings.find('.waves-effect').text("Please wait");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+                form_other_settings.find('.waves-effect').text('Save');
+                $('.other-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+                setTimeout(function () {
+                    $('.other-settings-alert').empty();
+                }, 2000);
+            }
+        }
+    });
+
+    form_soundcloud_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_soundcloud_settings.find('.waves-effect').text("Please wait");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+                form_soundcloud_settings.find('.waves-effect').text('Save');
+                $('.soundcloud-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+                setTimeout(function () {
+                    $('.soundcloud-settings-alert').empty();
+                }, 2000);
+            }
+        }
+    });
+
+    form_radiostation_settings.ajaxForm({
+        url: '{{CONFIG ajax_url}}/ap/save-settings',
+        beforeSend: function() {
+            form_radiostation_settings.find('.waves-effect').text("Please wait");
+        },
+        success: function(data) {
+            if (data.status == 200) {
+                form_radiostation_settings.find('.waves-effect').text('Save');
+                $('.radiostation-settings-alert').html('<div class="alert alert-success"><i class="fa fa-check"></i> Settings updated successfully</div>');
+                setTimeout(function () {
+                    $('.radiostation-settings-alert').empty();
+                }, 2000);
+            }
+        }
+    });
+
+
+});
+</script>

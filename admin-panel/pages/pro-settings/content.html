@@ -1,0 +1,169 @@
+<div class="container-fluid">
+    <div>
+        <h3>Pro System Settings</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">Pro System</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Pro System Settings</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Vertical Layout -->
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Pro System Settings</h6>
+                    <div class="pro-settings-alert"></div>
+                    <form class="pro-settings" method="POST">
+                        <div class="float-left">
+                            <label for="go_pro" class="main-label">Pro System</label>
+                            <br><small class="admin-info">Enable extra features with Pro System & Get paid.</small>
+                        </div>
+                        <div class="form-group float-right switcher">
+                            <input type="hidden" name="go_pro" value="off" />
+                            <input type="checkbox" name="go_pro" id="chck-go_pro" value="on" <?php echo ($music->config->go_pro == 'on') ? 'checked': '';?>>
+                            <label for="chck-go_pro" class="check-trail"><span class="check-handler"></span></label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <label class="form-label">Pro Plan Monthly Price</label>
+                                <input type="text" name="pro_price" class="form-control" value="<?php echo ($music->config->pro_price);?>">
+                                <small class="admin-info">Set the price for PRO package.</small>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <label for="who_can_download">Who can download songs?</label>
+                       <br><small class="admin-info">Choose who can download songs.</small>
+                       <div class="form-group">
+                           <select class="form-control show-tick" id="who_can_download" name="who_can_download">
+                             <option value="pro" <?php echo ($music->config->who_can_download == 'pro') ? 'selected': '';?>>Pro users</option>
+                             <option value="free" <?php echo ($music->config->who_can_download == 'free') ? 'selected': '';?>>Free users</option>
+                           </select>
+                       </div>
+                       <div class="clearfix"></div>
+                       <hr>
+
+                        <label for="pro_upload_limit">Non-Pro Max Upload Size</label>
+                        <br><small class="admin-info"></small>
+                        <div class="form-group">
+                            <select class="form-control show-tick" id="pro_upload_limit" name="pro_upload_limit">
+                              <option value="2" <?php if($music->config->pro_upload_limit == '2'){ echo "selected";} ?>>2MB</option>
+                                <option value="6" <?php if($music->config->pro_upload_limit == '6'){ echo "selected";} ?>>6MB</option>
+                                <option value="12" <?php if($music->config->pro_upload_limit == '12'){ echo "selected";} ?>>12MB</option>
+                                <option value="24" <?php if($music->config->pro_upload_limit == '24'){ echo "selected";} ?>>24MB</option>
+                                <option value="48" <?php if($music->config->pro_upload_limit == '48'){ echo "selected";} ?>>48MB</option>
+                                <option value="50" <?php if($music->config->pro_upload_limit == '50'){ echo "selected";} ?>>50MB</option>
+                                <option value="96" <?php if($music->config->pro_upload_limit == '96'){ echo "selected";} ?>>96MB</option>
+                                <option value="256" <?php if($music->config->pro_upload_limit == '256'){ echo "selected";} ?>>256MB</option>
+                                <option value="1024" <?php if($music->config->pro_upload_limit == '1024'){ echo "selected";} ?>>1GB</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="hash_id" value="<?php echo createMainSession();?>">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <!-- #END# Vertical Layout -->
+<script>
+$(function() {
+    $('.switcher input[type=checkbox]').click(function () {
+        var configName = $(this).attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        if ($(this).is(":checked") === true) {
+            objData[configName] = $(this).val();
+        }
+        else{
+            if ($('input[name='+configName+']')[0]) {
+                objData[configName] = $($('input[name='+configName+']')[0]).val();
+            }
+        }
+        objData['hash_id'] = hash_id;
+        $.post('{{CONFIG ajax_url}}/ap/save-settings', objData);
+    });
+
+    var setTimeOutColor = setTimeout(function (){});
+    $('select').on('change', function() {
+         clearTimeout(setTimeOutColor);
+        var thisElement = $(this);
+        var configName = thisElement.attr('name');
+        var hash_id = $('input[name=hash_id]').val();
+        var objData = {};
+        objData[configName] = thisElement.val();
+        objData['hash_id'] = hash_id;
+        thisElement.addClass('warning');
+        $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+            if (data.status == 200) {
+                thisElement.removeClass('warning');
+                thisElement.addClass('success');
+            } else {
+                thisElement.addClass('error');
+            }
+            var setTimeOutColor = setTimeout(function () {
+                thisElement.removeClass('success');
+                thisElement.removeClass('warning');
+                thisElement.removeClass('error');
+            }, 2000);
+        });
+    });
+    $('input[type=color]').on('change', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+    $('input[type=text], input[type=number], input[type=color] , textarea').on('keyup', delay(function() {
+            clearTimeout(setTimeOutColor);
+            var thisElement = $(this);
+            var configName = thisElement.attr('name');
+            var hash_id = $('input[name=hash_id]').val();
+            var objData = {};
+            objData[configName] = this.value;
+            objData['hash_id'] = hash_id;
+            thisElement.addClass('warning');
+            $.post("{{CONFIG ajax_url}}/ap/save-settings", objData, function (data) {
+                if (data.status == 200) {
+                    thisElement.removeClass('warning');
+                    thisElement.addClass('success');
+                } else {
+                    thisElement.addClass('error');
+                }
+                var setTimeOutColor = setTimeout(function () {
+                    thisElement.removeClass('success');
+                    thisElement.removeClass('warning');
+                    thisElement.removeClass('error');
+                }, 2000);
+                //thisElement.focus();
+            });
+    }, 500));
+});
+</script>
